@@ -1,0 +1,6 @@
+.env
+.idea/
+.wwebjs_auth/
+__pycache__/
+node_modules/
+whatsapp_ai_agent_guide.pdf

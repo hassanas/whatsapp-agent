@@ -1,0 +1,14 @@
+# config.yaml
+target_contact: "+966567490345, +923333838038"   # One or more comma-separated contacts; E.164 numbers or WhatsApp JIDs
+llm:
+  provider: "openai"              # "openai" or "ollama"
+  openai_model: "gpt-4o"
+  ollama_model: "llama3"
+  ollama_base_url: "http://localhost:11434"
+openai_api_key: ""                # Or set as env var OPENAI_API_KEY
+system_prompt: |
+  You are a helpful assistant replying on behalf of the phone owner.
+  Be concise and friendly. Never reveal you are an AI unless asked directly.
+memory_window: 10                 # Number of messages to keep in context
+bridge_port: 3000
+agent_port: 8000

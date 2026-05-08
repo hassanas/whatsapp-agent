@@ -1,0 +1,25 @@
+services:
+  bridge:
+    build: ./bridge
+    volumes:
+      - ./config.yaml:/app/../config.yaml:ro,Z   # share config
+      - wwebjs_session:/app/.wwebjs_auth        # persist WhatsApp session
+    depends_on:
+      - agent
+    environment:
+      - AGENT_PORT=8000
+      - DEBUG_ACCEPT_ALL_PRIVATE=${DEBUG_ACCEPT_ALL_PRIVATE:-false}
+      - DEBUG_SELF_CHAT=${DEBUG_SELF_CHAT:-false}
+
+  agent:
+    build: ./agent
+    volumes:
+      - ./config.yaml:/app/../config.yaml:ro,Z
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}        # pass from your shell env
+    ports:
+      - "8000:8000"                  # still only local
+    restart: unless-stopped
+
+volumes:
+  wwebjs_session:                               # named volume = session survives restarts
