@@ -22,6 +22,50 @@ whatsapp-agent/
     └── package.json
 ```
 
+## Message Flow
+
+```text
+WhatsApp User sends message
+        ↓
+[bridge - index.js]
+  • message / message_create event fires
+  • Dedup check (processedMessageIds)
+  • Group message? → ignore
+  • fromMe? → ignore
+  • isTargetMessage() → phone/JID matches target_contact?
+      └── No match → log NON_TARGET_IGNORED, stop
+      └── Match → continue
+  • Log [IN] message
+        ↓
+  axios.post → http://agent:8000/message
+        ↓
+[agent - main.py]
+  • FastAPI receives POST /message
+  • calls get_reply(msg.body)
+        ↓
+[agent - llm_chain.py]
+  • chain.invoke({ input, history })
+        ↓
+[LLM - Ollama/OpenAI]
+  • system_prompt from config.yaml
+  • conversation history (sliding window)
+  • generates response
+        ↓
+  • sanitize_reply() — cleans robotic phrases
+  • appends to history
+  • returns reply_text
+        ↓
+[agent - main.py]
+  • returns { reply: reply_text }
+        ↓
+[bridge - index.js]
+  • receives reply from agent
+  • normalizeReply() — trims whitespace
+  • client.sendMessage(msg.from, replyText)
+        ↓
+WhatsApp User receives reply
+```
+
 ## Prerequisites
 
 Make sure these are installed on your machine:

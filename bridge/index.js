@@ -23,8 +23,6 @@ const TARGET_JIDS = new Set(
     .map(value => value.toLowerCase())
 );
 const DEBUG_ACCEPT_ALL_PRIVATE = String(process.env.DEBUG_ACCEPT_ALL_PRIVATE || '').toLowerCase() === 'true';
-const recentlySentIds = new Set();
-const recentlySentFingerprints = new Set();
 const processedMessageIds = new Set();
 let announcedReady = false;
 
@@ -182,40 +180,10 @@ client.on('message_ack', (msg, ack) => {
   console.log(`[bridge] Ack ${ack} for ${id}`);
 });
 
-function rememberSentId(id) {
-  if (!id) return;
-  recentlySentIds.add(id);
-  setTimeout(() => recentlySentIds.delete(id), 120000);
-}
-
-function buildMessageFingerprint(body) {
-  return normalizeMessageBody(body);
-}
-
-function rememberSentMessage(body, id) {
-  rememberSentId(id);
-  const fingerprint = buildMessageFingerprint(body);
-  if (fingerprint) {
-    recentlySentFingerprints.add(fingerprint);
-    setTimeout(() => recentlySentFingerprints.delete(fingerprint), 5000);
-  }
-}
-
-function wasRecentlySentMessage(body, id) {
-  if (id && recentlySentIds.has(id)) return true;
-  return recentlySentFingerprints.has(buildMessageFingerprint(body));
-}
-
 function rememberProcessedMessage(id) {
   if (!id) return;
   processedMessageIds.add(id);
   setTimeout(() => processedMessageIds.delete(id), 120000);
-}
-
-function isConfiguredOwnNumber() {
-  const selfJid = normalizeJid(client.info?.wid?._serialized);
-  const selfPhone = normalizePhone(selfJid);
-  return TARGET_PHONES.has(selfPhone) || TARGET_JIDS.has(selfJid);
 }
 
 async function processMessage(msg, source) {
@@ -231,14 +199,10 @@ async function processMessage(msg, source) {
   if (!DEBUG_ACCEPT_ALL_PRIVATE) {
     const targetCheck = await isTargetMessage(msg);
     if (!targetCheck.matched) {
-      if (msg.fromMe && isConfiguredOwnNumber()) {
-        console.log('[bridge] Allowing self message from configured own number in strict mode');
-      } else {
       console.log(
         `[bridge][NON_TARGET_IGNORED] source=${source} id=${msg.id?._serialized || 'unknown'} from=${msg.from} body="${normalizeMessageBody(msg.body).slice(0, 160)}" expected=${TARGET_CONTACTS.join(', ') || '-'} actual_phones=${targetCheck.identity.phones.join(',') || '-'} actual_jids=${targetCheck.identity.jids.join(',') || '-'}`
       );
       return;
-      }
     }
   } else {
     console.log('[bridge] TEMP_DEBUG_MODE accepted private message');
@@ -265,7 +229,6 @@ async function processMessage(msg, source) {
 
   try {
     const sent = await client.sendMessage(msg.from, replyText);
-    rememberSentMessage(replyText, sent?.id?._serialized);
     console.log(`[bridge] Sent WhatsApp message ${sent?.id?._serialized || 'unknown'} to ${msg.from}`);
   } catch (err) {
     console.error('[bridge] WhatsApp send error:', err);
@@ -274,6 +237,7 @@ async function processMessage(msg, source) {
 
 client.on('message', async msg => {
   console.log(`[bridge] message event: from=${msg.from}, to=${msg.to || '-'}, fromMe=${msg.fromMe}, id=${msg?.id?._serialized || 'unknown'}`);
+  if (msg.fromMe) return;
   const id = msg?.id?._serialized;
   if (id && processedMessageIds.has(id)) return;
   rememberProcessedMessage(id);
@@ -288,14 +252,7 @@ client.on('message_create', async msg => {
   if (id && processedMessageIds.has(id)) return;
 
   if (msg.fromMe) {
-
-    if (wasRecentlySentMessage(msg.body, id)) {
-      console.log(`[bridge] Ignoring bridge-generated self-chat message: ${id || 'unknown'}`);
-      return;
-    }
-
-    rememberProcessedMessage(id);
-    await processMessage(msg, 'message_create/self');
+    console.log(`[bridge] Ignoring fromMe message: ${id || 'unknown'}`);
     return;
   }
 
