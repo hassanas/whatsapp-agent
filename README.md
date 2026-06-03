@@ -14,6 +14,29 @@ A Docker-based WhatsApp auto-reply project with two services:
 - `bridge`: connects to WhatsApp Web and sends/receives messages
 - `agent`: calls the LLM and returns reply text over HTTP
 
+---
+
+## 💼 Business Use Cases
+
+This agent can be deployed as a **24/7 intelligent WhatsApp assistant** for a wide range of industries and workflows:
+
+| # | Use Case | Description |
+|---|----------|-------------|
+| 📞 | **Customer Support Automation** | Instantly answer FAQs (pricing, hours, policies) without human intervention, reducing support queue load. |
+| 🏥 | **Appointment & Booking Assistant** | Clinics, salons, and restaurants can accept booking requests and send confirmations via WhatsApp. |
+| 🛒 | **E-commerce Order Assistant** | Handle "where's my order?", stock availability, return/refund queries automatically. |
+| 🏠 | **Real Estate Lead Qualifier** | Respond to property inquiries, capture buyer preferences, and schedule viewings conversationally. |
+| 📢 | **Marketing & Promotions** | Engage opted-in contacts with personalized offers and handle replies intelligently in real time. |
+| 🎓 | **Education & Enrollment** | Answer prospective student questions, share course details, and guide through enrollment steps. |
+| 🏦 | **Financial Services FAQ** | Banks and fintechs can handle routine account queries without exposing sensitive operations. |
+| 👥 | **Internal HR Bot** | Let employees query HR policies (leave, payslips, benefits) and get instant, accurate answers. |
+| 🍽️ | **Restaurant & Food Service** | Share menus, handle table reservations, and promote daily specials through automated chat. |
+| 🔧 | **After-Sales Technical Support** | Walk customers through troubleshooting steps before escalating to a live agent. |
+
+> **Key advantage:** The `system_prompt` in `config.yaml` lets you fully customize the agent's persona, tone, and knowledge domain — making it adaptable to virtually any business context without changing any code.
+
+---
+
 ## Project structure
 
 ```text
