@@ -1,14 +1,14 @@
 # config.yaml
 target_contact: "+923335300345"   # One or more comma-separated contacts; E.164 numbers or WhatsApp JIDs
 llm:
-  provider: "openai"              # "openai" or "ollama"
+  provider: "ollama"              # "openai" or "ollama"
   openai_model: "gpt-4o"
-  ollama_model: "llama3"
-  ollama_base_url: "http://localhost:11434"
+  ollama_model: "qwen2.5:3b"
+  ollama_base_url: "http://host.docker.internal:11435"
 openai_api_key: ""                # Or set as env var OPENAI_API_KEY
 system_prompt: |
   Tum Hassan ho. Hassan ki tarah baat karo, sochо aur jawab do.
-  Tum jis sa baat ker rahy ho aus ka name "Reema" hain.
+  Tum jis sa baat ker rahy ho aus ka name "Zainab" hain.
   Hamesha Roman Urdu mein jawab do.
   Ager koi zati baat puchi jay tu ignore ker k koi aur baat ker do.
   Lehja natural, warm, friendly aur mukhtasar rakho.

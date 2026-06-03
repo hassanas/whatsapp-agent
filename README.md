@@ -1,5 +1,14 @@
 # WhatsApp AI Agent
 
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=node.js&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?style=flat-square&logo=fastapi&logoColor=white)
+![WhatsApp](https://img.shields.io/badge/WhatsApp-Web.js-25D366?style=flat-square&logo=whatsapp&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C?style=flat-square&logo=chainlink&logoColor=white)
+![AI](https://img.shields.io/badge/AI-OpenAI%20%7C%20Ollama-7C3AED?style=flat-square&logo=openai&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)
+
 A Docker-based WhatsApp auto-reply project with two services:
 
 - `bridge`: connects to WhatsApp Web and sends/receives messages
