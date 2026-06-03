@@ -4,7 +4,6 @@
 __pycache__/
 *.pyc
 node_modules/
-whatsapp_ai_agent_guide.pdf
 
 # Python virtual environment
 .venv/
